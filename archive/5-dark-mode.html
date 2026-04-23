@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buddy System — DTT staff collaboration, reimagined.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E51636;
+      --red-glow: rgba(229,22,54,0.4);
+      --red-dim: rgba(229,22,54,0.12);
+      --stone-50: #fafaf9;
+      --stone-100: #f5f5f4;
+      --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1;
+      --stone-400: #a8a29e;
+      --stone-500: #78716c;
+      --stone-600: #57534e;
+      --stone-700: #44403c;
+      --stone-800: #292524;
+      --stone-900: #1c1917;
+      --bg: #1c1917;
+      --bg-raised: #231f1c;
+      --bg-high: #2a2522;
+      --border: rgba(255,255,255,0.07);
+      --border-bright: rgba(255,255,255,0.12);
+      --green: #16a34a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(28,25,23,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      box-shadow: 0 0 16px var(--red-glow);
+    }
+
+    .nav-logo-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      color: var(--stone-400);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .nav-back-link {
+      font-size: 0.78rem !important;
+      color: var(--stone-600) !important;
+    }
+
+    .btn-nav-dark {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.55rem 1.35rem;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 16px var(--red-glow);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-nav-dark:hover {
+      background: #b91c1c;
+      box-shadow: 0 0 24px rgba(229,22,54,0.5);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 3rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .hero-bg-glow {
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(229,22,54,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 880px;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--red-dim);
+      border: 1px solid rgba(229,22,54,0.2);
+      border-radius: 100px;
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--red);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 6px var(--red-glow);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-headline {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .cursor-block {
+      display: inline-block;
+      width: 0.55em;
+      height: 1em;
+      background: var(--red);
+      vertical-align: middle;
+      margin-left: 0.1em;
+      border-radius: 2px;
+      box-shadow: 0 0 12px var(--red-glow);
+      animation: cursorBlink 1s step-end infinite;
+    }
+
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--stone-400);
+      max-width: 560px;
+      margin: 1.5rem auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    /* Code label chips */
+    .code-chips {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .code-chip {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      color: var(--stone-500);
+      background: var(--bg-raised);
+      border: 1px solid var(--border-bright);
+      border-radius: 4px;
+      padding: 0.25rem 0.7rem;
+    }
+
+    .code-chip .kw { color: #f97316; }
+    .code-chip .val { color: var(--green); }
+    .code-chip .attr { color: var(--stone-300); }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary-dark {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem 2.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 24px var(--red-glow);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+
+    .btn-primary-dark:hover {
+      background: #b91c1c;
+      box-shadow: 0 0 36px rgba(229,22,54,0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost-dark {
+      background: transparent;
+      color: var(--stone-300);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.9rem 2.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-bright);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .btn-ghost-dark:hover {
+      border-color: rgba(255,255,255,0.25);
+      color: white;
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* FEATURE CARDS */
+    .features-dark {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label-dark {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1rem;
+    }
+
+    .section-title-dark {
+      text-align: center;
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: white;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-sub-dark {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--stone-500);
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto 4rem;
+      line-height: 1.65;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .dark-card {
+      background: var(--bg-raised);
+      padding: 2.25rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .dark-card:hover {
+      background: var(--bg-high);
+    }
+
+    .dark-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .dark-card:hover::after { opacity: 1; }
+
+    .card-icon-dark {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border-bright);
+    }
+
+    .icon-red-dark { background: var(--red-dim); box-shadow: 0 0 12px var(--red-glow); }
+    .icon-orange-dark { background: rgba(249,115,22,0.1); box-shadow: 0 0 12px rgba(249,115,22,0.2); }
+    .icon-blue-dark { background: rgba(59,130,246,0.1); box-shadow: 0 0 12px rgba(59,130,246,0.2); }
+    .icon-green-dark { background: rgba(22,163,74,0.1); box-shadow: 0 0 12px rgba(22,163,74,0.2); }
+    .icon-purple-dark { background: rgba(139,92,246,0.1); box-shadow: 0 0 12px rgba(139,92,246,0.2); }
+    .icon-teal-dark { background: rgba(20,184,166,0.1); box-shadow: 0 0 12px rgba(20,184,166,0.2); }
+
+    .card-title-dark {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-desc-dark {
+      font-size: 0.85rem;
+      color: var(--stone-500);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* STATS */
+    .stats-dark {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 3rem;
+    }
+
+    .stats-dark-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat-dark {
+      text-align: center;
+      padding: 0 3rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-dark:last-child { border-right: none; }
+
+    .stat-dark-num {
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: white;
+      margin-bottom: 0.4rem;
+      line-height: 1;
+    }
+
+    .stat-dark-num span {
+      color: var(--red);
+      text-shadow: 0 0 20px var(--red-glow);
+    }
+
+    .stat-dark-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--stone-600);
+      font-weight: 500;
+    }
+
+    /* PROFILES */
+    .profiles-section {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .profile-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .profile-card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-3px);
+    }
+
+    .profile-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .av-1 { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .av-2 { background: linear-gradient(135deg, #f97316, #ef4444); }
+    .av-3 { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+    .av-4 { background: linear-gradient(135deg, #14b8a6, #3b82f6); }
+    .av-5 { background: linear-gradient(135deg, #22c55e, #14b8a6); }
+    .av-6 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+    .av-7 { background: linear-gradient(135deg, #a855f7, #3b82f6); }
+    .av-8 { background: linear-gradient(135deg, #ec4899, #f97316); }
+
+    .profile-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.2rem;
+    }
+
+    .profile-team {
+      font-size: 0.72rem;
+      color: var(--stone-600);
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-tags {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .profile-tag {
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: var(--bg-high);
+      border: 1px solid var(--border-bright);
+      color: var(--stone-400);
+    }
+
+    .profile-availability {
+      margin-top: 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .availability-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 0.3rem;
+      box-shadow: 0 0 6px rgba(22,163,74,0.6);
+    }
+
+    /* DECORATIVE CODE STRIP */
+    .code-strip {
+      padding: 3rem;
+      background: var(--bg-raised);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .code-scroll {
+      display: flex;
+      gap: 2rem;
+      animation: scrollLeft 30s linear infinite;
+      width: max-content;
+    }
+
+    @keyframes scrollLeft {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .code-item {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: var(--stone-600);
+      white-space: nowrap;
+      padding: 0.4rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    .code-item .c-kw { color: #f97316; }
+    .code-item .c-str { color: #86efac; }
+    .code-item .c-attr { color: #93c5fd; }
+    .code-item .c-val { color: var(--red); }
+
+    /* CTA */
+    .cta-dark {
+      padding: 8rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--bg) 0%, #1a0a0e 100%);
+    }
+
+    .cta-dark::before {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(127,29,29,0.25) 0%, transparent 70%);
+    }
+
+    .cta-dark-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-dark-headline {
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: white;
+      margin-bottom: 1rem;
+      line-height: 1.05;
+    }
+
+    .cta-dark-sub {
+      color: var(--stone-500);
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      line-height: 1.65;
+    }
+
+    /* FOOTER */
+    footer {
+      background: linear-gradient(180deg, #1a0a0e 0%, var(--stone-900) 100%);
+      border-top: 1px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo-d {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .footer-logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .footer-logo-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-right-d {
+      font-size: 0.8rem;
+      color: var(--stone-700);
+      text-align: right;
+    }
+
+    .footer-right-d a {
+      color: var(--stone-600);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-right-d a:hover { color: var(--red); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 6rem 1.5rem 4rem; }
+      .features-dark { padding: 5rem 1.5rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .stats-dark { padding: 4rem 1.5rem; }
+      .stats-dark-inner { grid-template-columns: 1fr; }
+      .stat-dark { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem 0; }
+      .stat-dark:last-child { border-bottom: none; }
+      .profiles-section { padding: 5rem 1.5rem; }
+      .profiles-grid { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; gap: 1.5rem; padding: 2rem; }
+      .footer-right-d { text-align: center; }
+    }
+  
+  /* QR widget */
+  .qr-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 104px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .qr-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .qr-widget img {
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+  .qr-widget-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #44403c;
+    text-align: center;
+    line-height: 1.3;
+    font-family: 'Outfit', sans-serif;
+  }
+
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">🤝</div>
+      <span class="nav-logo-text">Buddy System</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html" class="nav-back-link">← All Designs</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#profiles">Engineers</a></li>
+    </ul>
+    <a href="#" class="btn-nav-dark">Get Started</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-bg-glow"></div>
+    <div class="hero-content">
+      <div class="hero-chip">
+        <span class="chip-dot"></span>
+        CFA Technology · Internal
+      </div>
+      <h1 class="hero-headline">
+        DTT staff collaboration,<br />reimagined.<span class="cursor-block"></span>
+      </h1>
+      <p class="hero-sub">
+        Stop hunting for pairing partners in Slack. Buddy System gives you a self-service layer to post availability, discover partners by skill, and confirm sessions — all in one place.
+      </p>
+      <div class="code-chips">
+        <span class="code-chip"><span class="kw">&lt;!--</span> <span class="attr">availability:</span> <span class="val">open</span> <span class="kw">--&gt;</span></span>
+        <span class="code-chip"><span class="kw">&lt;!--</span> <span class="attr">skill:</span> <span class="val">Swift, iOS</span> <span class="kw">--&gt;</span></span>
+        <span class="code-chip"><span class="kw">&lt;!--</span> <span class="attr">session:</span> <span class="val">confirmed</span> <span class="kw">--&gt;</span></span>
+      </div>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary-dark">Request Access →</a>
+        <a href="#features" class="btn-ghost-dark">Explore Features</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-dark" id="features">
+    <div class="section-label-dark">Platform Features</div>
+    <h2 class="section-title-dark">Built for how engineers actually think.</h2>
+    <p class="section-sub-dark">Every feature designed with the engineer experience at the center.</p>
+
+    <div class="cards-grid">
+      <div class="dark-card">
+        <div class="card-icon-dark icon-red-dark">📅</div>
+        <div class="card-title-dark">Post Availability</div>
+        <div class="card-desc-dark">Share a time window with your skill tags. Let engineers who need your expertise come to you.</div>
+      </div>
+      <div class="dark-card">
+        <div class="card-icon-dark icon-orange-dark">🔍</div>
+        <div class="card-title-dark">Skills Discovery</div>
+        <div class="card-desc-dark">Filter by technology, team, or time. Every profile tagged — Swift, React, Kubernetes, SQL.</div>
+      </div>
+      <div class="dark-card">
+        <div class="card-icon-dark icon-blue-dark">⚡</div>
+        <div class="card-title-dark">One-Click Requests</div>
+        <div class="card-desc-dark">Send a pairing request in a single click. Add context, hit send. They get notified immediately.</div>
+      </div>
+      <div class="dark-card">
+        <div class="card-icon-dark icon-green-dark">✅</div>
+        <div class="card-title-dark">Instant Confirmations</div>
+        <div class="card-desc-dark">Both engineers get a confirmed session the moment a request is accepted. Zero ambiguity.</div>
+      </div>
+      <div class="dark-card">
+        <div class="card-icon-dark icon-purple-dark">📊</div>
+        <div class="card-title-dark">Sessions Dashboard</div>
+        <div class="card-desc-dark">Upcoming sessions, pending requests, and history — all in a single, clean dashboard view.</div>
+      </div>
+      <div class="dark-card">
+        <div class="card-icon-dark icon-teal-dark">🏷️</div>
+        <div class="card-title-dark">Team Profiles</div>
+        <div class="card-desc-dark">Rich engineer profiles with skills, interests, and team context. Match on expertise, not guesswork.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-dark">
+    <div class="stats-dark-inner">
+      <div class="stat-dark">
+        <div class="stat-dark-num">200<span>+</span></div>
+        <div class="stat-dark-label">Active Engineers</div>
+      </div>
+      <div class="stat-dark">
+        <div class="stat-dark-num">48</div>
+        <div class="stat-dark-label">Teams</div>
+      </div>
+      <div class="stat-dark">
+        <div class="stat-dark-num">1,200<span>+</span></div>
+        <div class="stat-dark-label">Sessions Logged</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="code-strip">
+    <div class="code-scroll">
+      <span class="code-item"><span class="c-kw">POST</span> /availability <span class="c-attr">date</span>=<span class="c-str">"2024-05-03"</span> <span class="c-attr">window</span>=<span class="c-str">"14:00-16:00"</span></span>
+      <span class="code-item"><span class="c-kw">GET</span> /browse <span class="c-attr">skill</span>=<span class="c-str">"Swift"</span> <span class="c-attr">team</span>=<span class="c-str">"iOS"</span></span>
+      <span class="code-item"><span class="c-kw">POST</span> /requests <span class="c-attr">status</span>=<span class="c-val">pending</span> <span class="c-attr">→</span> <span class="c-str">confirmed</span></span>
+      <span class="code-item"><span class="c-kw">session.status</span> === <span class="c-str">"confirmed"</span> → <span class="c-kw">notify</span>(both)</span>
+      <span class="code-item"><span class="c-kw">&lt;!--</span> <span class="c-attr">availability:</span> <span class="c-str">open</span> | <span class="c-attr">skills:</span> <span class="c-str">["React","TypeScript"]</span> <span class="c-kw">--&gt;</span></span>
+      <!-- repeat for seamless scroll -->
+      <span class="code-item"><span class="c-kw">POST</span> /availability <span class="c-attr">date</span>=<span class="c-str">"2024-05-03"</span> <span class="c-attr">window</span>=<span class="c-str">"14:00-16:00"</span></span>
+      <span class="code-item"><span class="c-kw">GET</span> /browse <span class="c-attr">skill</span>=<span class="c-str">"Swift"</span> <span class="c-attr">team</span>=<span class="c-str">"iOS"</span></span>
+      <span class="code-item"><span class="c-kw">POST</span> /requests <span class="c-attr">status</span>=<span class="c-val">pending</span> <span class="c-attr">→</span> <span class="c-str">confirmed</span></span>
+      <span class="code-item"><span class="c-kw">session.status</span> === <span class="c-str">"confirmed"</span> → <span class="c-kw">notify</span>(both)</span>
+      <span class="code-item"><span class="c-kw">&lt;!--</span> <span class="c-attr">availability:</span> <span class="c-str">open</span> | <span class="c-attr">skills:</span> <span class="c-str">["React","TypeScript"]</span> <span class="c-kw">--&gt;</span></span>
+    </div>
+  </div>
+
+  <section class="profiles-section" id="profiles">
+    <div class="section-label-dark">The Network</div>
+    <h2 class="section-title-dark">800+ DTT staff. Find yours.</h2>
+    <p class="section-sub-dark">Every engineer across CFA Technology is already on the platform. Browse, filter, and pair up.</p>
+    <div class="profiles-grid">
+      <div class="profile-card">
+        <div class="profile-avatar av-1">AK</div>
+        <div class="profile-name">Alex Kim</div>
+        <div class="profile-team">Platform Engineering</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Kotlin</span>
+          <span class="profile-tag">K8s</span>
+          <span class="profile-tag">APIs</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-2">JM</div>
+        <div class="profile-name">Jordan Mills</div>
+        <div class="profile-team">Mobile Engineering</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Swift</span>
+          <span class="profile-tag">SwiftUI</span>
+          <span class="profile-tag">iOS</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-3">ST</div>
+        <div class="profile-name">Sam Torres</div>
+        <div class="profile-team">Data Engineering</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Python</span>
+          <span class="profile-tag">SQL</span>
+          <span class="profile-tag">dbt</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-4">PR</div>
+        <div class="profile-name">Priya Raj</div>
+        <div class="profile-team">Frontend Platform</div>
+        <div class="profile-tags">
+          <span class="profile-tag">React</span>
+          <span class="profile-tag">TS</span>
+          <span class="profile-tag">Next.js</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-5">DL</div>
+        <div class="profile-name">Dana Lee</div>
+        <div class="profile-team">Cloud Infrastructure</div>
+        <div class="profile-tags">
+          <span class="profile-tag">AWS</span>
+          <span class="profile-tag">Terraform</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-6">MW</div>
+        <div class="profile-name">Marcus Wade</div>
+        <div class="profile-team">Security Engineering</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Auth</span>
+          <span class="profile-tag">Zero Trust</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-7">EV</div>
+        <div class="profile-name">Elena Voss</div>
+        <div class="profile-team">Observability</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Datadog</span>
+          <span class="profile-tag">SRE</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar av-8">RC</div>
+        <div class="profile-name">Ryan Chen</div>
+        <div class="profile-team">Commerce Platform</div>
+        <div class="profile-tags">
+          <span class="profile-tag">Go</span>
+          <span class="profile-tag">gRPC</span>
+          <span class="profile-tag">Kafka</span>
+        </div>
+        <div class="profile-availability"><span class="availability-dot"></span>Available</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-dark">
+    <div class="cta-dark-inner">
+      <h2 class="cta-dark-headline">Join the engineers already shipping better software together.</h2>
+      <p class="cta-dark-sub">Request access and find your first pairing partner today. No Slack hunting required.</p>
+      <a href="#" class="btn-primary-dark" style="font-size: 1.05rem; padding: 1rem 2.5rem;">Request Access →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo-d">
+      <div class="footer-logo-icon">🤝</div>
+      <span class="footer-logo-name">Buddy System</span>
+    </div>
+    <div class="footer-right-d">
+      Chick-fil-A Technology · Internal Tool<br />
+      <a href="../index.html">← Back to all designs</a>
+    </div>
+  </footer>
+
+  <div class="qr-widget">
+    <img src="../qr-code.png" alt="Scan to open Buddy System" />
+    <div class="qr-widget-label">Scan to<br>open app</div>
+  </div>
+</body>
+</html>

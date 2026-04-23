@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buddy System — Stop hunting for a pairing partner.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E51636;
+      --red-hover: #b91c1c;
+      --stone-50: #fafaf9;
+      --stone-100: #f5f5f4;
+      --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1;
+      --stone-400: #a8a29e;
+      --stone-500: #78716c;
+      --stone-600: #57534e;
+      --stone-700: #44403c;
+      --stone-800: #292524;
+      --stone-900: #1c1917;
+      --green: #16a34a;
+      --surface: #faf9f7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--stone-50);
+      color: var(--stone-900);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 3rem;
+      background: rgba(250,250,249,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--stone-200);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--stone-900);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-logo-badge {
+      background: var(--red);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--stone-500);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--red); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--stone-600);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--stone-900); }
+
+    .btn-nav {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-nav:hover { background: var(--red-hover); }
+
+    /* HERO */
+    .hero {
+      padding: 8rem 3rem 5rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(229,22,54,0.08);
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 100px;
+      border: 1px solid rgba(229,22,54,0.2);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-headline {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--stone-900);
+      max-width: 700px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--stone-500);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--red-hover); transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--stone-700);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--stone-300);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-outline:hover { border-color: var(--stone-500); color: var(--stone-900); }
+
+    /* BROWSER MOCKUP */
+    .mockup-wrap {
+      margin-top: 4rem;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,0.05),
+        0 20px 60px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(0,0,0,0.06);
+      background: white;
+    }
+
+    .browser-chrome {
+      background: var(--stone-100);
+      border-bottom: 1px solid var(--stone-200);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #28ca41; }
+
+    .browser-url {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--stone-200);
+      border-radius: 6px;
+      padding: 0.35rem 1rem;
+      font-size: 0.78rem;
+      color: var(--stone-500);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .url-lock { font-size: 0.65rem; color: var(--green); }
+
+    /* APP UI */
+    .app-ui {
+      background: var(--stone-50);
+      padding: 1.5rem;
+    }
+
+    .app-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .app-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--stone-900);
+    }
+
+    .app-filters {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-chip {
+      background: white;
+      border: 1px solid var(--stone-200);
+      border-radius: 100px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--stone-600);
+    }
+
+    .filter-chip.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+
+    .engineer-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .eng-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--stone-200);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .eng-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .av-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .av-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    .av-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+    .av-orange { background: linear-gradient(135deg, #f97316, #c2410c); }
+
+    .eng-info { flex: 1; min-width: 0; }
+
+    .eng-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.2rem;
+    }
+
+    .eng-team {
+      font-size: 0.75rem;
+      color: var(--stone-500);
+      margin-bottom: 0.5rem;
+    }
+
+    .eng-tags {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .skill-tag {
+      background: var(--stone-100);
+      border: 1px solid var(--stone-200);
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--stone-600);
+      letter-spacing: 0.02em;
+    }
+
+    .eng-meta {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .eng-time {
+      font-size: 0.75rem;
+      color: var(--stone-500);
+      margin-bottom: 0.6rem;
+      white-space: nowrap;
+    }
+
+    .btn-request {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* FEATURE COLUMNS */
+    .features-section {
+      padding: 7rem 3rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--stone-900);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--stone-500);
+      font-weight: 300;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    .features-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .feat-col {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--stone-200);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+
+    .feat-col:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .feat-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .icon-red { background: rgba(229,22,54,0.08); }
+    .icon-blue { background: rgba(59,130,246,0.08); }
+    .icon-green { background: rgba(22,163,74,0.08); }
+
+    .feat-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feat-desc {
+      font-size: 0.875rem;
+      color: var(--stone-500);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    /* SESSIONS MOCKUP */
+    .sessions-section {
+      background: white;
+      padding: 7rem 3rem;
+    }
+
+    .sessions-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .sessions-text h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--stone-900);
+      margin-bottom: 1rem;
+      line-height: 1.15;
+    }
+
+    .sessions-text p {
+      font-size: 1rem;
+      color: var(--stone-500);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .sessions-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .sessions-feat {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--stone-700);
+      font-weight: 500;
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(22,163,74,0.1);
+      border: 1px solid rgba(22,163,74,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* SESSIONS MOCKUP */
+    .sessions-mockup {
+      background: var(--stone-50);
+      border-radius: 16px;
+      border: 1px solid var(--stone-200);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    .sessions-header-bar {
+      background: white;
+      border-bottom: 1px solid var(--stone-200);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sessions-header-bar .title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--stone-900);
+    }
+
+    .sessions-count {
+      background: var(--red);
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+    }
+
+    .session-list {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .session-row {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid var(--stone-200);
+      padding: 0.875rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .session-date-badge {
+      background: rgba(229,22,54,0.08);
+      border: 1px solid rgba(229,22,54,0.15);
+      border-radius: 8px;
+      padding: 0.4rem 0.6rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .date-month {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--red);
+      letter-spacing: 0.06em;
+    }
+
+    .date-day {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--stone-900);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .session-info { flex: 1; min-width: 0; }
+
+    .session-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.15rem;
+    }
+
+    .session-meta-sm {
+      font-size: 0.72rem;
+      color: var(--stone-500);
+    }
+
+    .session-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+    }
+
+    .status-confirmed {
+      background: rgba(22,163,74,0.1);
+      color: var(--green);
+      border: 1px solid rgba(22,163,74,0.2);
+    }
+
+    .status-pending {
+      background: rgba(234,179,8,0.1);
+      color: #854d0e;
+      border: 1px solid rgba(234,179,8,0.2);
+    }
+
+    /* CTA */
+    .cta-section {
+      background: var(--stone-900);
+      padding: 7rem 3rem;
+      text-align: center;
+    }
+
+    .cta-inner {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-headline {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: white;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .cta-sub {
+      color: var(--stone-400);
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      line-height: 1.65;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--stone-900);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem 2.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .btn-white:hover { background: var(--stone-100); }
+
+    /* FOOTER */
+    footer {
+      background: var(--stone-800);
+      padding: 2.5rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-size: 0.82rem;
+      color: var(--stone-500);
+    }
+
+    .footer-text strong { color: var(--stone-300); }
+
+    .footer-link {
+      font-size: 0.82rem;
+      color: var(--stone-500);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--red); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero { padding: 6rem 1.5rem 3rem; }
+      .mockup-wrap { margin-top: 2.5rem; }
+      .features-section { padding: 4rem 1.5rem; }
+      .features-3col { grid-template-columns: 1fr; }
+      .sessions-section { padding: 4rem 1.5rem; }
+      .sessions-inner { grid-template-columns: 1fr; gap: 3rem; }
+      footer { flex-direction: column; gap: 1rem; }
+    }
+  
+  /* QR widget */
+  .qr-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 104px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .qr-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .qr-widget img {
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+  .qr-widget-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #44403c;
+    text-align: center;
+    line-height: 1.3;
+    font-family: 'Outfit', sans-serif;
+  }
+
+</style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <a href="#" class="nav-logo">
+        Buddy System
+        <span class="nav-logo-badge">Beta</span>
+      </a>
+      <a href="../index.html" class="nav-back">← All Designs</a>
+    </div>
+    <div class="nav-right">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#sessions" class="nav-link">Dashboard</a>
+      <a href="#" class="btn-nav">Get Started</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-tag">For Chick-fil-A DTT Staff</div>
+    <h1 class="hero-headline">Stop hunting for a pairing partner.</h1>
+    <p class="hero-sub">Buddy System lets you post availability, browse open slots, and confirm sessions with the right colleague — in minutes, not days.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Request Access</a>
+      <a href="#features" class="btn-outline">See the features</a>
+    </div>
+
+    <!-- Browser Mockup: Browse UI -->
+    <div class="mockup-wrap">
+      <div class="browser-chrome">
+        <div class="browser-dots">
+          <div class="browser-dot dot-red"></div>
+          <div class="browser-dot dot-yellow"></div>
+          <div class="browser-dot dot-green"></div>
+        </div>
+        <div class="browser-url">
+          <span class="url-lock">🔒</span>
+          buddysystem.cfatechnology.com/browse
+        </div>
+      </div>
+      <div class="app-ui">
+        <div class="app-topbar">
+          <div class="app-title">Browse Open Slots</div>
+          <div class="app-filters">
+            <div class="filter-chip active">All</div>
+            <div class="filter-chip">Swift</div>
+            <div class="filter-chip">React</div>
+            <div class="filter-chip">Backend</div>
+          </div>
+        </div>
+        <div class="engineer-cards">
+          <div class="eng-card">
+            <div class="eng-avatar av-blue">AK</div>
+            <div class="eng-info">
+              <div class="eng-name">Alex Kim</div>
+              <div class="eng-team">Platform Engineering · Senior SWE</div>
+              <div class="eng-tags">
+                <span class="skill-tag">Kotlin</span>
+                <span class="skill-tag">Kubernetes</span>
+                <span class="skill-tag">APIs</span>
+              </div>
+            </div>
+            <div class="eng-meta">
+              <div class="eng-time">Fri, May 2 · 2–4pm</div>
+              <button class="btn-request">Request to Pair</button>
+            </div>
+          </div>
+          <div class="eng-card">
+            <div class="eng-avatar av-purple">JM</div>
+            <div class="eng-info">
+              <div class="eng-name">Jordan Mills</div>
+              <div class="eng-team">Mobile Engineering · Staff SWE</div>
+              <div class="eng-tags">
+                <span class="skill-tag">Swift</span>
+                <span class="skill-tag">SwiftUI</span>
+                <span class="skill-tag">iOS</span>
+              </div>
+            </div>
+            <div class="eng-meta">
+              <div class="eng-time">Mon, May 5 · 10am–12pm</div>
+              <button class="btn-request">Request to Pair</button>
+            </div>
+          </div>
+          <div class="eng-card">
+            <div class="eng-avatar av-teal">ST</div>
+            <div class="eng-info">
+              <div class="eng-name">Sam Torres</div>
+              <div class="eng-team">Data Engineering · Senior SWE</div>
+              <div class="eng-tags">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">dbt</span>
+              </div>
+            </div>
+            <div class="eng-meta">
+              <div class="eng-time">Tue, May 6 · 1–3pm</div>
+              <button class="btn-request">Request to Pair</button>
+            </div>
+          </div>
+          <div class="eng-card">
+            <div class="eng-avatar av-orange">PR</div>
+            <div class="eng-info">
+              <div class="eng-name">Priya Raj</div>
+              <div class="eng-team">Frontend Platform · SWE II</div>
+              <div class="eng-tags">
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">TypeScript</span>
+                <span class="skill-tag">Next.js</span>
+              </div>
+            </div>
+            <div class="eng-meta">
+              <div class="eng-time">Wed, May 7 · 3–5pm</div>
+              <button class="btn-request">Request to Pair</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="features-header">
+      <div class="section-eyebrow">Platform Features</div>
+      <h2 class="section-title">Everything the old way was missing.</h2>
+      <p class="section-desc">No more Slack threads, calendar ping-pong, or wondering who knows what. Buddy System handles it.</p>
+    </div>
+    <div class="features-3col">
+      <div class="feat-col">
+        <div class="feat-icon-wrap icon-red">📅</div>
+        <div class="feat-title">Post Your Availability</div>
+        <div class="feat-desc">Share open time windows with your skill tags. Let the right colleagues discover you without any extra effort.</div>
+      </div>
+      <div class="feat-col">
+        <div class="feat-icon-wrap icon-blue">🔍</div>
+        <div class="feat-title">Skills-Based Discovery</div>
+        <div class="feat-desc">Filter by technology, team, or time window. Every profile is tagged so you can match on expertise, not guesswork.</div>
+      </div>
+      <div class="feat-col">
+        <div class="feat-icon-wrap icon-green">✅</div>
+        <div class="feat-title">Instant Confirmations</div>
+        <div class="feat-desc">Send a pairing request with one click. When it's accepted, both colleagues get a confirmation immediately.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SESSIONS MOCKUP -->
+  <section class="sessions-section" id="sessions">
+    <div class="sessions-inner">
+      <div class="sessions-text">
+        <div class="section-eyebrow">Sessions Dashboard</div>
+        <h2>Your pairing calendar, finally in one place.</h2>
+        <p>See all your upcoming sessions, pending requests, and past pairings in a clean dashboard. Never miss a session or lose track of a request.</p>
+        <div class="sessions-features">
+          <div class="sessions-feat">
+            <div class="check-icon">✓</div>
+            Upcoming sessions at a glance
+          </div>
+          <div class="sessions-feat">
+            <div class="check-icon">✓</div>
+            Accept or decline incoming requests
+          </div>
+          <div class="sessions-feat">
+            <div class="check-icon">✓</div>
+            Full session history
+          </div>
+          <div class="sessions-feat">
+            <div class="check-icon">✓</div>
+            Email confirmations for every session
+          </div>
+        </div>
+      </div>
+
+      <div class="sessions-mockup">
+        <div class="sessions-header-bar">
+          <span class="title">My Sessions</span>
+          <span class="sessions-count">3 upcoming</span>
+        </div>
+        <div class="session-list">
+          <div class="session-row">
+            <div class="session-date-badge">
+              <div class="date-month">May</div>
+              <div class="date-day">2</div>
+            </div>
+            <div class="session-info">
+              <div class="session-name">Session with Alex Kim</div>
+              <div class="session-meta-sm">2:00 – 4:00pm · Platform Engineering</div>
+            </div>
+            <div class="session-status status-confirmed">Confirmed</div>
+          </div>
+          <div class="session-row">
+            <div class="session-date-badge">
+              <div class="date-month">May</div>
+              <div class="date-day">5</div>
+            </div>
+            <div class="session-info">
+              <div class="session-name">Session with Jordan Mills</div>
+              <div class="session-meta-sm">10:00am – 12:00pm · Mobile Eng.</div>
+            </div>
+            <div class="session-status status-confirmed">Confirmed</div>
+          </div>
+          <div class="session-row">
+            <div class="session-date-badge">
+              <div class="date-month">May</div>
+              <div class="date-day">7</div>
+            </div>
+            <div class="session-info">
+              <div class="session-name">Session with Priya Raj</div>
+              <div class="session-meta-sm">3:00 – 5:00pm · Frontend Platform</div>
+            </div>
+            <div class="session-status status-pending">Pending</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2 class="cta-headline">Find your next pairing partner today.</h2>
+      <p class="cta-sub">Join 800+ Chick-fil-A DTT staff already using Buddy System to collaborate and grow together.</p>
+      <a href="#" class="btn-white">Request Access →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-text"><strong>Buddy System</strong> · Chick-fil-A Technology Internal Tool</div>
+    <a href="../index.html" class="footer-link">← Back to all designs</a>
+  </footer>
+
+  <div class="qr-widget">
+    <img src="../qr-code.png" alt="Scan to open Buddy System" />
+    <div class="qr-widget-label">Scan to<br>open app</div>
+  </div>
+</body>
+</html>

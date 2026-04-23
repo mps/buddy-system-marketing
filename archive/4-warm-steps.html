@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buddy System — Four steps to your next great collaboration session.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E51636;
+      --red-hover: #b91c1c;
+      --red-light: rgba(229,22,54,0.08);
+      --green: #16a34a;
+      --green-light: rgba(22,163,74,0.08);
+      --stone-50: #fafaf9;
+      --stone-100: #f5f5f4;
+      --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1;
+      --stone-400: #a8a29e;
+      --stone-500: #78716c;
+      --stone-600: #57534e;
+      --stone-700: #44403c;
+      --stone-800: #292524;
+      --stone-900: #1c1917;
+      --cream: #fef9f6;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--stone-900);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(254,249,246,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(214,211,209,0.5);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .logo-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--stone-600);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--red); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--stone-400);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--stone-600); }
+
+    .btn-nav {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-nav:hover { background: var(--red-hover); }
+
+    /* HERO */
+    .hero {
+      padding: 9rem 3rem 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+      background: linear-gradient(180deg, var(--cream) 0%, #ffffff 100%);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow-line {
+      width: 24px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .hero-headline {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      color: var(--stone-900);
+      max-width: 760px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--stone-500);
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem 2.25rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover { background: var(--red-hover); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--stone-700);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.9rem 2.25rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--stone-300);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--stone-500); color: var(--stone-900); }
+
+    /* STEPS */
+    .steps-section {
+      padding: 7rem 3rem;
+      background: white;
+    }
+
+    .steps-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .steps-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .steps-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .steps-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--stone-900);
+    }
+
+    /* Step flow */
+    .steps-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .steps-connector {
+      position: absolute;
+      top: 40px;
+      left: calc(12.5% + 20px);
+      right: calc(12.5% + 20px);
+      height: 2px;
+      background: linear-gradient(90deg,
+        var(--red) 0%,
+        rgba(229,22,54,0.4) 33%,
+        rgba(229,22,54,0.4) 66%,
+        var(--red) 100%
+      );
+      z-index: 0;
+    }
+
+    .steps-connector::before,
+    .steps-connector::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid var(--red);
+      border-right: 2px solid var(--red);
+    }
+
+    .steps-connector::before {
+      left: 32%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .steps-connector::after {
+      left: 65%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      box-shadow:
+        0 0 0 6px white,
+        0 0 0 7px rgba(229,22,54,0.15),
+        0 8px 24px rgba(229,22,54,0.25);
+      transition: transform 0.3s;
+      cursor: default;
+    }
+
+    .step-circle:hover { transform: scale(1.06); }
+
+    .step-circle-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .step-num-badge {
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      opacity: 0.7;
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--stone-500);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    /* Status pills under steps */
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+    }
+
+    .pill-red {
+      background: var(--red-light);
+      color: var(--red);
+      border: 1px solid rgba(229,22,54,0.15);
+    }
+
+    .pill-green {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid rgba(22,163,74,0.2);
+    }
+
+    .pill-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* FEATURES GRID */
+    .features-section {
+      padding: 7rem 3rem;
+      background: var(--cream);
+    }
+
+    .features-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .features-head {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .features-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+    }
+
+    .features-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--stone-900);
+    }
+
+    .features-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .feat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem 2rem 2rem 2.5rem;
+      border: 1.5px solid var(--stone-200);
+      border-left: 4px solid var(--red);
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .feat-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+    }
+
+    .feat-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--red-light);
+      border: 1px solid rgba(229,22,54,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .feat-card-body {}
+
+    .feat-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feat-card-desc {
+      font-size: 0.875rem;
+      color: var(--stone-500);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    /* SUCCESS CALLOUT */
+    .success-bar {
+      background: var(--green-light);
+      border: 1px solid rgba(22,163,74,0.15);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      grid-column: 1 / -1;
+    }
+
+    .success-bar-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .success-bar-text strong {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .success-bar-text span {
+      font-size: 0.875rem;
+      color: var(--stone-600);
+    }
+
+    /* STATS */
+    .stats-section {
+      background: white;
+      padding: 6rem 3rem;
+    }
+
+    .stats-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .stat-card {
+      text-align: center;
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--stone-200);
+    }
+
+    .stat-n {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--stone-900);
+      margin-bottom: 0.35rem;
+      line-height: 1;
+    }
+
+    .stat-n span { color: var(--red); }
+
+    .stat-l {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--stone-500);
+      font-weight: 500;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 8rem 3rem;
+      text-align: center;
+      background: linear-gradient(180deg, var(--cream) 0%, white 50%, var(--cream) 100%);
+    }
+
+    .cta-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--red-light);
+      border: 1px solid rgba(229,22,54,0.15);
+      border-radius: 100px;
+      padding: 0.35rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-headline {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--stone-900);
+      margin-bottom: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.1;
+    }
+
+    .cta-sub {
+      font-size: 1rem;
+      color: var(--stone-500);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--stone-900);
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-sub {
+      font-size: 0.78rem;
+      color: var(--stone-500);
+      margin-top: 0.25rem;
+    }
+
+    .footer-link {
+      font-size: 0.82rem;
+      color: var(--stone-500);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--red); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-center { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .steps-section { padding: 5rem 1.5rem; }
+      .steps-flow { grid-template-columns: 1fr 1fr; gap: 3rem; }
+      .steps-connector { display: none; }
+      .features-section { padding: 5rem 1.5rem; }
+      .features-2col { grid-template-columns: 1fr; }
+      .stats-section { padding: 4rem 1.5rem; }
+      .stats-inner { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1.5rem; padding: 2rem 1.5rem; }
+    }
+  
+  /* QR widget */
+  .qr-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 104px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .qr-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .qr-widget img {
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+  .qr-widget-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #44403c;
+    text-align: center;
+    line-height: 1.3;
+    font-family: 'Outfit', sans-serif;
+  }
+
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="logo-icon">🤝</div>
+      <span class="logo-text">Buddy System</span>
+    </a>
+    <div class="nav-center">
+      <a href="#steps" class="nav-link">How It Works</a>
+      <a href="#features" class="nav-link">Features</a>
+    </div>
+    <div class="nav-right">
+      <a href="../index.html" class="nav-back">← All Designs</a>
+      <a href="#" class="btn-nav">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      How It Works
+      <span class="eyebrow-line"></span>
+    </div>
+    <h1 class="hero-headline">Four steps to your next great collaboration session.</h1>
+    <p class="hero-sub">Buddy System makes collaboration simple. No coordination overhead, no Slack archaeology — just great sessions with the right engineers.</p>
+    <div class="hero-cta-group">
+      <a href="#" class="btn-primary">Get Started →</a>
+      <a href="#steps" class="btn-ghost">See the steps</a>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="steps-section" id="steps">
+    <div class="steps-inner">
+      <div class="steps-header">
+        <div class="steps-eyebrow">
+          <span class="eyebrow-line"></span>
+          The Process
+          <span class="eyebrow-line"></span>
+        </div>
+        <h2 class="steps-title">From zero to paired up in minutes.</h2>
+      </div>
+
+      <div class="steps-flow">
+        <div class="steps-connector"></div>
+
+        <div class="step-item">
+          <div class="step-circle">
+            <div class="step-circle-icon">📅</div>
+            <div class="step-num-badge">STEP 1</div>
+          </div>
+          <div class="step-title">Post Your Availability</div>
+          <div class="step-desc">Share a date and time window. Tag yourself with the skills and topics you're open to exploring.</div>
+          <div class="step-pill pill-red"><span class="pill-dot"></span>You're live</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">
+            <div class="step-circle-icon">🔍</div>
+            <div class="step-num-badge">STEP 2</div>
+          </div>
+          <div class="step-title">Browse Open Slots</div>
+          <div class="step-desc">Explore who's available. Filter by skill, team, or time. Every card shows what they know and when they're free.</div>
+          <div class="step-pill pill-red"><span class="pill-dot"></span>Discovery</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">
+            <div class="step-circle-icon">🤝</div>
+            <div class="step-num-badge">STEP 3</div>
+          </div>
+          <div class="step-title">Send a Pairing Request</div>
+          <div class="step-desc">Click "Request to Pair." Add a note about what you want to work on. The engineer gets notified immediately.</div>
+          <div class="step-pill pill-red"><span class="pill-dot"></span>Requested</div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">
+            <div class="step-circle-icon">✅</div>
+            <div class="step-num-badge">STEP 4</div>
+          </div>
+          <div class="step-title">Confirm and Pair Up</div>
+          <div class="step-desc">When the request is accepted, both engineers receive a confirmation. Your session is locked in.</div>
+          <div class="step-pill pill-green"><span class="pill-dot"></span>Confirmed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="features-inner">
+      <div class="features-head">
+        <div class="features-label">Why Engineers Love It</div>
+        <h2 class="features-title">Built for how engineers actually work.</h2>
+      </div>
+      <div class="features-2col">
+        <div class="feat-card">
+          <div class="feat-card-icon">💬</div>
+          <div class="feat-card-body">
+            <div class="feat-card-title">No More Slack Hunting</div>
+            <div class="feat-card-desc">Stop searching through channels for "who knows Swift." Post a slot or find one — no DMs, no thread archaeology.</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-card-icon">🏷️</div>
+          <div class="feat-card-body">
+            <div class="feat-card-title">Skills-Based Discovery</div>
+            <div class="feat-card-desc">Every engineer profile has skill tags. Filter by React, Kubernetes, SQL, Swift — and find exactly who you need.</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-card-icon">⚡</div>
+          <div class="feat-card-body">
+            <div class="feat-card-title">One-Click Requests</div>
+            <div class="feat-card-desc">See someone available? One click to send a request. Add a short note and you're done. They'll get notified right away.</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-card-icon">📧</div>
+          <div class="feat-card-body">
+            <div class="feat-card-title">Email Confirmations</div>
+            <div class="feat-card-desc">When a session is confirmed, both engineers get a notification with all the details. Nothing slips through the cracks.</div>
+          </div>
+        </div>
+        <div class="success-bar">
+          <div class="success-bar-icon">🎉</div>
+          <div class="success-bar-text">
+            <strong>94% of pairing requests are accepted within 2 hours.</strong>
+            <span>Across 50+ teams, engineers are finding great sessions faster than ever.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section">
+    <div class="stats-inner">
+      <div class="stat-card">
+        <div class="stat-n">200<span>+</span></div>
+        <div class="stat-l">Active Engineers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">48</div>
+        <div class="stat-l">Teams</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">1,200<span>+</span></div>
+        <div class="stat-l">Sessions Logged</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-eyebrow">🚀 Internal Tool · CFA Technology</div>
+    <h2 class="cta-headline">Ready for your first collaboration session?</h2>
+    <p class="cta-sub">Join Chick-fil-A Technology engineers who are already shipping better software together with Buddy System.</p>
+    <div class="hero-cta-group">
+      <a href="#" class="btn-primary">Request Access →</a>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="footer-brand">Buddy System</div>
+      <div class="footer-sub">An internal tool for Chick-fil-A Technology</div>
+    </div>
+    <a href="../index.html" class="footer-link">← Back to all designs</a>
+  </footer>
+
+  <div class="qr-widget">
+    <img src="../qr-code.png" alt="Scan to open Buddy System" />
+    <div class="qr-widget-label">Scan to<br>open app</div>
+  </div>
+</body>
+</html>

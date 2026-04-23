@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buddy System — Everyone's finding their next pairing partner.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E51636;
+      --red-hover: #b91c1c;
+      --red-50: #fef2f2;
+      --red-light: rgba(229,22,54,0.08);
+      --stone-50: #fafaf9;
+      --stone-100: #f5f5f4;
+      --stone-200: #e7e5e4;
+      --stone-300: #d6d3d1;
+      --stone-400: #a8a29e;
+      --stone-500: #78716c;
+      --stone-600: #57534e;
+      --stone-700: #44403c;
+      --stone-800: #292524;
+      --stone-900: #1c1917;
+      --green: #16a34a;
+      --green-light: rgba(22,163,74,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: white;
+      color: var(--stone-900);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(254,242,242,0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(229,22,54,0.1);
+    }
+
+    .nav-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--stone-900);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      color: var(--stone-600);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--red); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-back {
+      font-size: 0.8rem;
+      color: var(--stone-400);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--stone-600); }
+
+    .btn-nav {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.6rem 1.35rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-nav:hover { background: var(--red-hover); }
+
+    /* HERO */
+    .hero {
+      background: var(--red-50);
+      padding: 9rem 3rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(229,22,54,0.25), transparent);
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-label-line {
+      width: 20px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .hero-headline {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--stone-900);
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--stone-500);
+      max-width: 520px;
+      margin: 0 auto 3.5rem;
+      line-height: 1.7;
+    }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .marquee-wrap::before,
+    .marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 100px;
+      z-index: 2;
+    }
+
+    .marquee-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, var(--red-50), transparent);
+    }
+
+    .marquee-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, var(--red-50), transparent);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 1rem;
+      animation: marqueeScroll 28s linear infinite;
+      width: max-content;
+    }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: white;
+      border: 1px solid rgba(229,22,54,0.12);
+      border-radius: 100px;
+      padding: 0.5rem 1rem 0.5rem 0.5rem;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .marquee-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .m-1 { background: center/cover no-repeat url(images/persona_1.png); }
+    .m-2 { background: center/cover no-repeat url(images/persona_2.png); }
+    .m-3 { background: center/cover no-repeat url(images/persona_3.png); }
+    .m-4 { background: center/cover no-repeat url(images/persona_4.png); }
+    .m-5 { background: center/cover no-repeat url(images/persona_5.png); }
+    .m-6 { background: center/cover no-repeat url(images/persona_6.png); }
+    .m-7 { background: center/cover no-repeat url(images/persona_7.png); }
+    .m-8 { background: center/cover no-repeat url(images/persona_8.png); }
+    .m-9 { background: center/cover no-repeat url(images/persona_1.png); }
+    .m-10 { background: center/cover no-repeat url(images/persona_2.png); }
+
+    .marquee-info {}
+
+    .marquee-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      line-height: 1.2;
+    }
+
+    .marquee-team {
+      font-size: 0.68rem;
+      color: var(--stone-400);
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem 2.25rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--red-hover); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: white;
+      color: var(--stone-700);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.9rem 2.25rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--stone-300);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--stone-500); color: var(--stone-900); }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      padding: 7rem 3rem;
+      background: white;
+    }
+
+    .testimonials-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--stone-900);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .testimonial-card {
+      background: var(--stone-50);
+      border: 1.5px solid var(--stone-200);
+      border-radius: 20px;
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+      position: relative;
+    }
+
+    .testimonial-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.09);
+      transform: translateY(-4px);
+      border-color: rgba(229,22,54,0.2);
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      font-size: 5rem;
+      line-height: 1;
+      color: rgba(229,22,54,0.08);
+      font-weight: 900;
+      pointer-events: none;
+    }
+
+    .stars {
+      display: flex;
+      gap: 3px;
+    }
+
+    .star {
+      color: #f59e0b;
+      font-size: 1rem;
+    }
+
+    .testimonial-quote {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--stone-800);
+      line-height: 1.7;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      border-top: 1px solid var(--stone-200);
+      padding-top: 1.25rem;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .t-av-1 { background: center/cover no-repeat url(images/persona_1.png); }
+    .t-av-2 { background: center/cover no-repeat url(images/persona_2.png); }
+    .t-av-3 { background: center/cover no-repeat url(images/persona_3.png); }
+
+    .testimonial-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--stone-900);
+    }
+
+    .testimonial-role {
+      font-size: 0.75rem;
+      color: var(--stone-500);
+      margin-top: 0.1rem;
+    }
+
+    /* STATS */
+    .stats-section {
+      background: var(--stone-900);
+      padding: 6rem 3rem;
+    }
+
+    .stats-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .stats-label {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(229,22,54,0.8);
+      margin-bottom: 3.5rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem 3rem;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: white;
+      margin-bottom: 0.4rem;
+      line-height: 1;
+    }
+
+    .stat-num span { color: var(--red); }
+
+    .stat-desc {
+      font-size: 0.8rem;
+      color: var(--stone-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 500;
+    }
+
+    /* FEATURES WHY */
+    .why-section {
+      padding: 7rem 3rem;
+      background: var(--stone-50);
+    }
+
+    .why-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .why-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--stone-200);
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .why-card:hover {
+      box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+      transform: translateY(-2px);
+    }
+
+    .why-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .why-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--stone-900);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .why-desc {
+      font-size: 0.875rem;
+      color: var(--stone-500);
+      line-height: 1.65;
+    }
+
+    /* SOCIAL PROOF BAR */
+    .social-bar {
+      background: white;
+      border-top: 1px solid var(--stone-200);
+      border-bottom: 1px solid var(--stone-200);
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .social-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--stone-600);
+    }
+
+    .social-bar-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--red-light);
+      border: 1px solid rgba(229,22,54,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .social-bar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--stone-200);
+    }
+
+    /* AVATAR STACK */
+    .avatar-stack {
+      display: flex;
+    }
+
+    .av-stack-item {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: white;
+      margin-right: -8px;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 8rem 3rem;
+      text-align: center;
+      background: linear-gradient(180deg, white 0%, var(--red-50) 100%);
+    }
+
+    .cta-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .cta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: white;
+      border: 1px solid var(--stone-200);
+      border-radius: 100px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .cta-avatars {
+      display: flex;
+    }
+
+    .cta-av {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 800;
+      color: white;
+      margin-right: -6px;
+    }
+
+    .cta-badge-text {
+      font-size: 0.8rem;
+      color: var(--stone-700);
+      font-weight: 600;
+      padding-left: 0.5rem;
+    }
+
+    .cta-headline {
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--stone-900);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: var(--stone-500);
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--stone-900);
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .footer-brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .footer-brand-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-brand-sub {
+      font-size: 0.75rem;
+      color: var(--stone-600);
+      margin-top: 0.2rem;
+    }
+
+    .footer-link {
+      font-size: 0.82rem;
+      color: var(--stone-600);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover { color: var(--red); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-center { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .testimonials { padding: 5rem 1.5rem; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .stats-section { padding: 4rem 1.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .stat-item:last-child { border-bottom: none; }
+      .why-section { padding: 5rem 1.5rem; }
+      .why-grid { grid-template-columns: 1fr; }
+      .social-bar { flex-direction: column; gap: 1rem; }
+      .social-bar-divider { width: 60%; height: 1px; }
+      footer { flex-direction: column; gap: 1.5rem; padding: 2rem 1.5rem; }
+    }
+  
+  /* QR widget */
+  .qr-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 104px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .qr-widget:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .qr-widget img {
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+  .qr-widget-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #44403c;
+    text-align: center;
+    line-height: 1.3;
+    font-family: 'Outfit', sans-serif;
+  }
+
+</style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="logo-dot"></span>
+      Buddy System
+    </a>
+    <div class="nav-center">
+      <a href="#testimonials" class="nav-link">Testimonials</a>
+      <a href="#why" class="nav-link">Features</a>
+    </div>
+    <div class="nav-right">
+      <a href="archive/hub.html" class="nav-back">View all 6 designs</a>
+      <a href="#" class="btn-nav">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-label">
+      <span class="hero-label-line"></span>
+      Trusted by CFA Technology
+      <span class="hero-label-line"></span>
+    </div>
+    <h1 class="hero-headline">Everyone's finding their next pairing partner.</h1>
+    <p class="hero-sub">800+ DTT staff across 50+ teams use Buddy System to schedule collaboration sessions without the Slack chaos.</p>
+
+    <!-- Marquee -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <div class="marquee-item"><div class="marquee-avatar m-1"></div><div class="marquee-info"><div class="marquee-name">Alex Kim</div><div class="marquee-team">Platform Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-2"></div><div class="marquee-info"><div class="marquee-name">Jordan Mills</div><div class="marquee-team">Mobile Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-3"></div><div class="marquee-info"><div class="marquee-name">Sam Torres</div><div class="marquee-team">Data Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-4"></div><div class="marquee-info"><div class="marquee-name">Priya Raj</div><div class="marquee-team">Frontend Platform</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-5"></div><div class="marquee-info"><div class="marquee-name">Dana Lee</div><div class="marquee-team">Cloud Infrastructure</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-6"></div><div class="marquee-info"><div class="marquee-name">Marcus Wade</div><div class="marquee-team">Security Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-7"></div><div class="marquee-info"><div class="marquee-name">Elena Voss</div><div class="marquee-team">Observability</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-8"></div><div class="marquee-info"><div class="marquee-name">Ryan Chen</div><div class="marquee-team">Commerce Platform</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-9"></div><div class="marquee-info"><div class="marquee-name">Nina Patel</div><div class="marquee-team">Core Services</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-10"></div><div class="marquee-info"><div class="marquee-name">Ben Wu</div><div class="marquee-team">Dev Productivity</div></div></div>
+        <!-- Duplicate for seamless scroll -->
+        <div class="marquee-item"><div class="marquee-avatar m-1"></div><div class="marquee-info"><div class="marquee-name">Alex Kim</div><div class="marquee-team">Platform Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-2"></div><div class="marquee-info"><div class="marquee-name">Jordan Mills</div><div class="marquee-team">Mobile Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-3"></div><div class="marquee-info"><div class="marquee-name">Sam Torres</div><div class="marquee-team">Data Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-4"></div><div class="marquee-info"><div class="marquee-name">Priya Raj</div><div class="marquee-team">Frontend Platform</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-5"></div><div class="marquee-info"><div class="marquee-name">Dana Lee</div><div class="marquee-team">Cloud Infrastructure</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-6"></div><div class="marquee-info"><div class="marquee-name">Marcus Wade</div><div class="marquee-team">Security Engineering</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-7"></div><div class="marquee-info"><div class="marquee-name">Elena Voss</div><div class="marquee-team">Observability</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-8"></div><div class="marquee-info"><div class="marquee-name">Ryan Chen</div><div class="marquee-team">Commerce Platform</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-9"></div><div class="marquee-info"><div class="marquee-name">Nina Patel</div><div class="marquee-team">Core Services</div></div></div>
+        <div class="marquee-item"><div class="marquee-avatar m-10"></div><div class="marquee-info"><div class="marquee-name">Ben Wu</div><div class="marquee-team">Dev Productivity</div></div></div>
+      </div>
+    </div>
+
+    <div class="hero-cta-group">
+      <a href="#" class="btn-primary">Join Them →</a>
+      <a href="#testimonials" class="btn-ghost">Read the stories</a>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="social-bar">
+    <div class="social-bar-item">
+      <div class="social-bar-icon">⭐</div>
+      Rated 4.9 / 5 by engineers
+    </div>
+    <div class="social-bar-divider"></div>
+    <div class="social-bar-item">
+      <div class="social-bar-icon">🚀</div>
+      800+ DTT staff
+    </div>
+    <div class="social-bar-divider"></div>
+    <div class="social-bar-item">
+      <div class="social-bar-icon">✅</div>
+      94% request acceptance rate
+    </div>
+    <div class="social-bar-divider"></div>
+    <div class="social-bar-item">
+      <div class="social-bar-icon">🤝</div>
+      1,200+ sessions completed
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="testimonials">
+    <div class="testimonials-inner">
+      <div class="testimonials-header">
+        <div class="section-eyebrow">Real DTT Staff. Real Results.</div>
+        <h2 class="section-title">What the team is saying.</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <p class="testimonial-quote">
+            "Found a partner in 5 minutes. No Slack hunting required. I posted my availability Tuesday morning and had a confirmed session before lunch."
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar t-av-1"></div>
+            <div>
+              <div class="testimonial-name">Alex K.</div>
+              <div class="testimonial-role">Senior SWE · Platform Engineering</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <p class="testimonial-quote">
+            "Our team went from 0 to 3 weekly collaboration sessions in one sprint. Buddy System removed all the friction we didn't even realize was there."
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar t-av-2"></div>
+            <div>
+              <div class="testimonial-name">Jordan M.</div>
+              <div class="testimonial-role">Staff SWE · Mobile Engineering</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <p class="testimonial-quote">
+            "The skills tags are game-changing. I found exactly the Swift expert I needed, filtered by availability, sent a request, and had it confirmed same day."
+          </p>
+          <div class="testimonial-footer">
+            <div class="testimonial-avatar t-av-3"></div>
+            <div>
+              <div class="testimonial-name">Sam T.</div>
+              <div class="testimonial-role">SWE II · iOS Engineering</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section">
+    <div class="stats-inner">
+      <div class="stats-label">By the numbers</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-num">200<span>+</span></div>
+          <div class="stat-desc">Active Engineers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">94<span>%</span></div>
+          <div class="stat-desc">Request Acceptance Rate</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">1,200<span>+</span></div>
+          <div class="stat-desc">Sessions Completed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="why-section" id="why">
+    <div class="why-inner">
+      <div class="why-header">
+        <div class="section-eyebrow">Why Teams Love It</div>
+        <h2 class="section-title">Built to remove every excuse not to pair.</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <span class="why-icon">🎯</span>
+          <div class="why-title">Skills-based matching</div>
+          <div class="why-desc">Find engineers tagged with the exact technologies you need. No more guessing who knows what.</div>
+        </div>
+        <div class="why-card">
+          <span class="why-icon">⚡</span>
+          <div class="why-title">Zero coordination overhead</div>
+          <div class="why-desc">Post, request, confirm. Three steps and you have a session on the calendar. No DMs, no back-and-forth.</div>
+        </div>
+        <div class="why-card">
+          <span class="why-icon">📊</span>
+          <div class="why-title">Team visibility</div>
+          <div class="why-desc">See who on your team is available and what they're working on. Better collaboration starts with transparency.</div>
+        </div>
+        <div class="why-card">
+          <span class="why-icon">📧</span>
+          <div class="why-title">Automatic confirmations</div>
+          <div class="why-desc">Every confirmed session sends an email to both engineers. Nothing slips through the cracks.</div>
+        </div>
+        <div class="why-card">
+          <span class="why-icon">🕓</span>
+          <div class="why-title">Flexible scheduling</div>
+          <div class="why-desc">Set any time window that works for you. Engineers browse slots that fit their calendar, not yours.</div>
+        </div>
+        <div class="why-card">
+          <span class="why-icon">🤝</span>
+          <div class="why-title">Cross-team discovery</div>
+          <div class="why-desc">The best expertise isn't always on your team. Browse across all 50+ teams at CFA Technology.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div class="cta-badge">
+        <div class="cta-avatars">
+          <div class="cta-av m-1">A</div>
+          <div class="cta-av m-2">J</div>
+          <div class="cta-av m-3">S</div>
+          <div class="cta-av m-4">P</div>
+          <div class="cta-av m-5">D</div>
+        </div>
+        <span class="cta-badge-text">800+ DTT staff already inside</span>
+      </div>
+      <h2 class="cta-headline">Your team is already using it.<br />Join them.</h2>
+      <p class="cta-sub">Request access and find your first pairing partner today. Chick-fil-A Technology engineers only.</p>
+      <div class="hero-cta-group">
+        <a href="#" class="btn-primary">Request Access →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="footer-brand">
+        <span class="footer-brand-dot"></span>
+        <span class="footer-brand-name">Buddy System</span>
+      </div>
+      <div class="footer-brand-sub">Chick-fil-A Technology · Internal Tool</div>
+    </div>
+    <a href="archive/hub.html" class="footer-link">View all 6 designs</a>
+  </footer>
+
+  <div class="qr-widget">
+    <img src="qr-code.png" alt="Scan to open Buddy System" />
+    <div class="qr-widget-label">Scan to<br>open app</div>
+  </div>
+</body>
+</html>
